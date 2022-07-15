@@ -96,6 +96,10 @@ button:focus {
     border-bottom-right-radius: 5px;
 }
 
+#test4{
+    background-image: url("emotion.jpg");
+}
+
 #test1{
     background-image: url("draw.jpg");
 }
@@ -107,3 +111,4 @@ button:focus {
 #test3{
     background-image: url("wordcloud.jpg");
 }
+

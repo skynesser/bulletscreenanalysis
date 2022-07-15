@@ -11,6 +11,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 from wordcloud import WordCloud
+from cnsenti import Sentiment
+
 
 
 def get_html(url, header):
@@ -152,18 +154,46 @@ def word_generate(r):
                 #     file_handle.write("{}\n".format(data_result))     # 同检查分词用的代码
                 wc = WordCloud(font_path="STXIHEI.TTF", background_color="white", max_words=5000, max_font_size=50,
                                scale=6, )
+
                 try:
                     wc.generate(text)
-                    plt.imshow(wc)
+                    plt.show(wc)
                     plt.axis("off")
                     plt.savefig(r'core/static/core/wordcloud.jpg')
                 except:
                     pass
 
 
+def emotion_analysis(request):
+    data = pd.read_csv('data/cav_file.csv',sep=',',header='infer',encoding="UTF-8",usecols=[1])
+
+    test_text=str(data)
+    senti=Sentiment()
+    result1 = senti.sentiment_count(test_text)
+    # print(result1)
+
+    fig = plt.figure()
+    plt.rcParams['font.sans-serif']=['SimHei']  # 用来正常显示中文标签
+    # print(result1.keys())
+    x1 = list(result1.keys())
+    x1 = list(map(str,x1))  # list（map（str，x1））方法，将返回一个列表，列表中元素是str
+    # print(x1)
+    y1 = list(result1.values())
+    # print(y1)
+
+    fig.tight_layout(h_pad=2)  # 设置子图间的间隙，canshu
+    plt.subplot(1,1,1)  # 切割子图
+    plt.bar(x1,y1)
+    plt.xlabel('检测数据')
+    plt.ylabel('个数')
+    plt.title('情感分析图')
+    plt.savefig("core/static/core/emotion.jpg")
+    plt.show()
+
 
 def detail(request):
-    # spider(request)
-    # word_generate(request)
-    # analysis(request)
+    spider(request)
+    word_generate(request)
+    analysis(request)
+    emotion_analysis(request)
     return render(request, 'core/detail.html')
