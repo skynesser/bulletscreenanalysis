@@ -111,6 +111,7 @@ def analysis(request):
     plt.legend(loc='upper right')
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.savefig(r"core/static/core/word.jpg")
+    plt.show()
 
     data = pd.read_csv('data/cav_file.csv', encoding="utf-8")
     data = data.sort_values('time')
@@ -122,11 +123,13 @@ def analysis(request):
     list2 = [item for item in data.time]
     data_sum = [item for item in data.counted]
     matplotlib.rcParams["font.family"] = "SimHei"
-    plt.plot(list2, data_sum, "c")
+    plt.plot(list2, data_sum)
     plt.ylabel("弹幕数量")
     plt.xlabel("视频时间轴/(秒)")
     plt.title("弹幕密度变化图")
     plt.savefig(r"core/static/core/draw.jpg")
+    plt.show()
+
 
 
 
@@ -159,9 +162,8 @@ def word_generate(r):
 
 
 
-
 def detail(request):
-    spider(request)
-    word_generate(request)
+    # spider(request)
+    # word_generate(request)
     analysis(request)
     return render(request, 'core/detail.html')
