@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #333;
+            color: #222;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fafafa;
+            transform-origin: top left;
+            transition: transform 0.5s linear;
+            width: 100vw;
+            min-height: 100vh;
+            padding: 50px;
+        }
+
+        .container.show-nav {
+            transform: rotate(-20deg);
+        }
+
+        .circle-container {
+            position: fixed;
+            top: -100px;
+            left: -100px;
+        }
+
+        .circle {
+            background-color: #ff7979;
+            height: 200px;
+            width: 200px;
+            border-radius: 50%;
+            position: relative;
+            transition: transform 0.5s linear;
+        }
+
+        .container.show-nav .circle {
+            transform: rotate(-70deg);
+        }
+
+        .circle button {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            height: 100px;
+            background: transparent;
+            border: 0;
+            font-size: 26px;
+            color: #fff;
+        }
+
+        .circle button:focus {
+            outline: none;
+        }
+
+        .circle button#open {
+            left: 60%;
+        }
+
+        .circle button#close {
+            top: 60%;
+            transform: rotate(90deg);
+            transform-origin: top left;
+        }
+
+        .container.show-nav + nav li {
+            transform: translateX(0);
+            transition-delay: 0.3s;
+        }
+
+        nav {
+            position: fixed;
+            bottom: 40px;
+            left: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding-left: 30px;
+        }
+
+        nav ul li {
+            text-transform: uppercase;
+            color: #fff;
+            margin: 40px 0;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease-in;
+        }
+
+        nav ul li i {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        nav ul li + li {
+            margin-left: 15px;
+            transform: translateX(-150%);
+        }
+
+        nav ul li + li + li {
+            margin-left: 30px;
+            transform: translateX(-200%);
+        }
+
+        .content img {
+            max-width: 100%;
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 50px auto;
+        }
+
+        .content h1 {
+            margin: 0;
+        }
+
+        .content small {
+            color: #555;
+            font-style: italic;
+        }
+
+        .content p {
+            color: #333;
+            line-height: 1.5;
+        }
+        #customers {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+        #customers tr:hover {background-color: #ddd;}
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #ff7979;
+            color: white;
+        }
+
+        .search .input {
+            background-color: #fff;
+            border: 0;
+            font-size: 18px;
+            padding: 15px;
+            height: 50px;
+            width: 50px;
+            transition: width 0.3s ease;
+        }
+
+        .btn {
+            background-color: #fff;
+            border: 0;
+            cursor: pointer;
+            font-size: 24px;
+
+            top: 0;
+            left: 0;
+            height: 50px;
+            width: 50px;
+
+        }
+
+
+
+        .search.active .input {
+            width: 200px;
+        }
+
+        .search.active .btn {
+        }
+
+
+
+    </style>
+    <title>Rotating Navigation</title>
+</head>
+<body>
+{% load static %}
+
+<div class="container">
+    <div class="circle-container">
+        <div class="circle">
+            <button id="close">
+                <i class="fas fa-times"></i>
+            </button>
+            <button id="open">
+                <i class="fas fa-bars" onclick="skip()"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1 style="font-size: 100px;margin: auto;">B站弹幕分析<img src="{% static 'core/logo.png' %}" style="width: 20%;float: right;"/></h1><br>
+
+        <small style="clear:both;">Analysis of the bullet screen at station B</small>
+        <div>
+
+        </div>
+        <p style="font-size: 40px;">输入你的B站视频的BV号，获取视频弹幕分析</p>
+        <div>
+            <form action="{% url 'detail' %}" method="post">
+                {% csrf_token %}
+                <input name="BV_ID" type="text" class="input" placeholder="Search..." style="
+                background-color: #fff;
+                border: 0;
+                font-size: 18px;
+                padding: 15px;
+                height: 50px;
+                width: 200px;
+                transition: width 0.3s ease;">
+                <button class="btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <h3>项目参与者</h3>
+
+        <p>
+        <table id="customers">
+            <tr>
+                <th>module</th>
+                <th>Developer</th>
+            </tr>
+            <tr>
+                <td>WEB</td>
+                <td>罗俊杰</td>
+            </tr>
+            <tr>
+                <td>前端</td>
+                <td>杨正阳</td>
+            </tr>
+            <tr>
+                <td>爬虫</td>
+                <td>罗徐杰</td>
+            </tr>
+            <tr>
+                <td>高频词和弹幕密度分析</td>
+                <td>程阳</td>
+            </tr>
+            <tr>
+                <td>词云和情感分析</td>
+                <td>张启帆</td>
+            </tr>
+        </table>
+        </p>
+    </div>
+</div>
+
+<nav>
+    <ul>
+        <li><i class="fas fa-home"></i> Home</li>
+        <li><i class="fas fa-user-alt"></i> About</li>
+        <li><i class="fas fa-envelope"></i> Contact</li>
+    </ul>
+</nav>
+<script>
+    const open = document.getElementById('open');
+    const close = document.getElementById('close');
+    const container = document.querySelector('.container');
+
+    open.addEventListener('click', () => container.classList.add('show-nav'));
+
+    close.addEventListener('click', () => container.classList.remove('show-nav'));
+
+    function skip(){
+        document.location.href="core/spider";
+    }
+
+</script>
+</body>
+</html>
