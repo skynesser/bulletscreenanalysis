@@ -4,37 +4,72 @@
     {% load static %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="{% static 'core/detail.css' %}" type="text/css" rel="stylesheet"></link>
-    <title>Expanding Cards</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="{% static 'core/detail.css' %}" />
+    <title>Vertical Slider</title>
 </head>
 <body>
-<div class="container">
-    <div class="panel active" id="test1">
-        <h3>高频词</h3>
+<div class="slider-container">
+    <div class="left-slide">
+        <div style="background-color: #FD3555">
+            <h1>词云</h1>
+            <p>wordcloud</p>
+        </div>
+        <div style="background-color: #2A86BA">
+            <h1>高频词</h1>
+            <p>出现最多的10个词</p>
+        </div>
+        <div style="background-color: #252E33">
+            <h1>弹幕密度分析</h1>
+            <p>弹幕数量随着时间的变化</p>
+        </div>
     </div>
-    <div class="panel" id="test2" >
-        <h3>弹幕密度分析</h3>
+    <div class="right-slide">
+        <div id="test1"></div>
+        <div id="test2"></div>
+        <div id="test3"></div>
     </div>
-    <div class="panel" id="test3">
-        <h3>词云</h3>
+    <div class="action-buttons">
+        <button class="down-button">
+            <i class="fas fa-arrow-down"></i>
+        </button>
+        <button class="up-button">
+            <i class="fas fa-arrow-up"></i>
+        </button>
     </div>
-
 </div>
 
 <script>
-    const panels = document.querySelectorAll('.panel')
+    const sliderContainer = document.querySelector('.slider-container')
+    const slideRight = document.querySelector('.right-slide')
+    const slideLeft = document.querySelector('.left-slide')
+    const upButton = document.querySelector('.up-button')
+    const downButton = document.querySelector('.down-button')
+    const slidesLength = slideRight.querySelectorAll('div').length
 
-    panels.forEach(panel => {
-        panel.addEventListener('click', () => {
-            removeActiveClasses()
-            panel.classList.add('active')
-        })
-    })
+    let activeSlideIndex = 0
 
-    function removeActiveClasses() {
-        panels.forEach(panel => {
-            panel.classList.remove('active')
-        })
+    slideLeft.style.top = `-${(slidesLength - 1) * 100}vh`
+
+    upButton.addEventListener('click', () => changeSlide('up'))
+    downButton.addEventListener('click', () => changeSlide('down'))
+
+    const changeSlide = (direction) => {
+        const sliderHeight = sliderContainer.clientHeight
+        if(direction === 'up') {
+            activeSlideIndex++
+            if(activeSlideIndex > slidesLength - 1) {
+                activeSlideIndex = 0
+            }
+        } else if(direction === 'down') {
+            activeSlideIndex--
+            if(activeSlideIndex < 0) {
+                activeSlideIndex = slidesLength - 1
+            }
+        }
+
+        slideRight.style.transform = `translateY(-${activeSlideIndex * sliderHeight}px)`
+        slideLeft.style.transform = `translateY(${activeSlideIndex * sliderHeight}px)`
     }
 </script>
 </body>

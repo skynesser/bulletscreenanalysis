@@ -165,5 +165,5 @@ def word_generate(r):
 def detail(request):
     # spider(request)
     # word_generate(request)
-    analysis(request)
+    # analysis(request)
     return render(request, 'core/detail.html')
